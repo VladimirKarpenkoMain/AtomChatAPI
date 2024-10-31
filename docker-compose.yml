@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17
+    container_name: backend_db
+    env_file:
+      - .docker-env
+    ports:
+      - "5432:5432"
+
+  app:
+    container_name: backend_app
+    build:
+      context: .
+    env_file:
+      - .docker-env
+    depends_on:
+      - db
+    command: ["/backend/docker/app.sh"]
+    #command: ["ls", "-la", "/backend/docker"]
+    ports:
+      - "7777:8000"
