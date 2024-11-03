@@ -1,12 +1,13 @@
 DEBUG=True
+LOG_LEVEL=INFO
 
 DB_HOST=db
 DB_PORT=5432
-DB_NAME=atomchat
+DB_NAME=atom_chat
 DB_USER=postgres
 DB_PASS=postgres
 
-POSTGRES_DB=atomchat
+POSTGRES_DB=atom_chat
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 

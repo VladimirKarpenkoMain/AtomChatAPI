@@ -1,8 +1,9 @@
 #!/bin/sh
-python /backend/app/core/generate_certs.py
-python /backend/app/core/generate_db.py
 
 sleep 5
+
+python /backend/app/core/generate_certs.py
+python /backend/app/core/generate_db.py
 
 alembic upgrade head
 

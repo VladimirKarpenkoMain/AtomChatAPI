@@ -157,3 +157,4 @@ cython_debug/
 .idea/
 app/certs
 app/__pycache__/
+app.log

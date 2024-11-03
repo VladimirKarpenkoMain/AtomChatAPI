@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field, BaseModel
+from typing import Literal
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent.parent.parent
@@ -14,6 +15,7 @@ class AuthJWT(BaseModel):
 
 class Settings(BaseSettings):
     DEBUG: bool
+    LOG_LEVEL: Literal["INFO", "DEBUG"]
 
     DB_HOST: str
     DB_PORT: int

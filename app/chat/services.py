@@ -5,8 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.auth.dao import UsersDao
 from app.chat.dao import MessageDAO
-from app.chat.shemas import SMessageCreate
-from app.chat.websocket import notify_users_about_new_message, notify_chat_list_update
+from app.chat.shemas import SWebsocketMessage
 from app.core.exceptions import UserSearchNotFoundException, \
     UserMessagesBetweenYourselfException, UserMessagesBetweenSameException, UsersIdNotFoundException, OneUserIdNotFoundException
 
@@ -72,24 +71,18 @@ class ChatService:
         }
 
     @classmethod
-    async def add_message(cls, message: SMessageCreate, current_user_id: UUID4):
-        if current_user_id == message.recipient_id:
+    async def add_message(cls, message: SWebsocketMessage, sender_id: UUID4):
+        if sender_id == message.recipient_id:
             raise UserMessagesBetweenYourselfException
         try:
-            new_message = await MessageDAO.add(
+            await MessageDAO.add(
                 message_text=message.message_text,
-                sender_id=current_user_id,
+                sender_id=sender_id,
                 recipient_id=message.recipient_id
             )
 
-            await notify_users_about_new_message(new_message)
-            await notify_chat_list_update(current_user_id, new_message.recipient_id, new_message.created_at)
             return {
                 "status": "success",
-                "sender_id": new_message.sender_id,
-                "recipient_id": new_message.recipient_id,
-                "message_text": new_message.message_text,
-                "created_at": new_message.created_at,
             }
         except IntegrityError:
             raise OneUserIdNotFoundException(message.recipient_id)

@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
 from pydantic import UUID4
 
+from app.core.logger import logger
+
 
 class BaseException(HTTPException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -90,3 +92,15 @@ class UserMessagesBetweenSameException(BaseException):
 class UserMessagesBetweenYourselfException(BaseException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = "The user cannot send messages to himself."
+
+class ErrorHandler:
+    _type_error: Exception = None
+    _type_error_message: str = None
+    @classmethod
+    def _log_error(cls, e: Exception, error_message: str, extra: dict = None):
+        if isinstance(e, cls._type_error):
+            msg = cls._type_error_message
+        else:
+            msg = "Unknown Error"
+        msg = msg + ": " + error_message
+        logger.error(msg, extra=extra, exc_info=True)

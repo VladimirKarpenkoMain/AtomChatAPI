@@ -1,9 +1,9 @@
 from datetime import datetime
-
-from dns.e164 import query
 from pydantic import UUID4
 from sqlalchemy import select, case, func, desc, or_, and_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import aliased
+
 from app.core.config import settings
 
 from app.core.database import async_session_maker
@@ -39,116 +39,151 @@ class MessageDAO(BaseDao):
             GROUP BY chat_partner_id
             ORDER by last_message_time DESC;
             """
-            sub_query = select(
-                case(
-                    (
+            try:
+                sub_query = select(
+                    case(
+                        (
+                            cls.model.sender_id == current_user_id,
+                            cls.model.recipient_id
+                        ), else_=cls.model.sender_id).label('chat_partner_id'),
+                    func.max(cls.model.created_at).label('last_message_time')
+                ).where(
+                    or_(
                         cls.model.sender_id == current_user_id,
-                        cls.model.recipient_id
-                    ), else_=cls.model.sender_id).label('chat_partner_id'),
-                func.max(cls.model.created_at).label('last_message_time')
-            ).where(
-                or_(
-                    cls.model.sender_id == current_user_id,
-                    cls.model.recipient_id == current_user_id
-                )
-            ).group_by('chat_partner_id').subquery()
+                        cls.model.recipient_id == current_user_id
+                    )
+                ).group_by('chat_partner_id').subquery()
 
-            query = select(
-                sub_query.c.chat_partner_id,
-                User.username,
-                sub_query.c.last_message_time
-            ).join(
-                User, User.id == sub_query.c.chat_partner_id
-            )
-
-            if cursor_last_message_time:
-                query = query.where(
-                    sub_query.c.last_message_time < cursor_last_message_time
+                query = select(
+                    sub_query.c.chat_partner_id,
+                    User.username,
+                    sub_query.c.last_message_time
+                ).join(
+                    User, User.id == sub_query.c.chat_partner_id
                 )
 
-            query = query.order_by(
-                desc(sub_query.c.last_message_time)
-            ).limit(limit)
+                if cursor_last_message_time:
+                    query = query.where(
+                        sub_query.c.last_message_time < cursor_last_message_time
+                    )
 
-            result = await session.execute(query)
-            chats = result.all()
-            return chats
+                query = query.order_by(
+                    desc(sub_query.c.last_message_time)
+                ).limit(limit)
+
+                result = await session.execute(query)
+                chats = result.all()
+                return chats
+            except (SQLAlchemyError, Exception) as e:
+                cls._log_error(
+                    e,
+                    error_message=f"Cannot get chats of user, model {cls.model.__name__}",
+                    extra={
+                        "current_user_id": str(current_user_id),
+                        "cursor_last_message_time": str(cursor_last_message_time),
+                        "limit": limit
+                    }
+                )
 
     @classmethod
     async def get_messages_between_users(
-            cls, current_user_id,
-            participant_user_id,
+            cls,
+            current_user_id: UUID4,
+            participant_user_id: UUID4,
             cursor_time: datetime = None,
             cursor_message_id: int = None,
-            limit=settings.BASE_LIMIT_MESSAGES_FOR_USER
+            limit: int =settings.BASE_LIMIT_MESSAGES_FOR_USER
     ):
         async with (async_session_maker() as session):
-            query = select(
-                cls.model.id,
-                cls.model.message_text,
-                cls.model.sender_id,
-                cls.model.created_at,
-            ).where(
-                or_(
-                    and_(
-                        cls.model.sender_id == current_user_id,
-                        cls.model.recipient_id == participant_user_id
-                    ),
-                    and_(
-                        cls.model.sender_id == participant_user_id,
-                        cls.model.recipient_id == current_user_id
-                    )
-                )
-            )
-
-            if cursor_time and cursor_message_id:
-                query = query.where(
+            try:
+                query = select(
+                    cls.model.id,
+                    cls.model.message_text,
+                    cls.model.sender_id,
+                    cls.model.created_at,
+                ).where(
                     or_(
-                        cls.model.created_at < cursor_time,
                         and_(
-                            cls.model.created_at == cursor_time,
-                            cls.model.id < cursor_message_id
+                            cls.model.sender_id == current_user_id,
+                            cls.model.recipient_id == participant_user_id
+                        ),
+                        and_(
+                            cls.model.sender_id == participant_user_id,
+                            cls.model.recipient_id == current_user_id
                         )
                     )
                 )
 
-            query = query.order_by(
-                desc(cls.model.created_at)
-            ).limit(limit)
+                if cursor_time and cursor_message_id:
+                    query = query.where(
+                        or_(
+                            cls.model.created_at < cursor_time,
+                            and_(
+                                cls.model.created_at == cursor_time,
+                                cls.model.id < cursor_message_id
+                            )
+                        )
+                    )
 
-            result = await session.execute(query)
-            messages = result.all()
-            return messages
+                query = query.order_by(
+                    desc(cls.model.created_at)
+                ).limit(limit)
+
+                result = await session.execute(query)
+                messages = result.all()
+                return messages
+            except (SQLAlchemyError, Exception) as e:
+                cls._log_error(
+                    e,
+                    error_message=f"Cannot get messages between users, model {cls.model.__name__}",
+                    extra={
+                        "current_user_id": current_user_id,
+                        "participant_user_id": participant_user_id,
+                        "cursor_time": cursor_time,
+                        "cursor_message_id": cursor_message_id,
+                        "limit": limit
+                    }
+                )
 
     @classmethod
     async def get_all_users_chats(cls, limit: int, offset: int):
-        async with async_session_maker() as session:
-            # Создаем алиасы для отправителя и получателя для удобства
-            sender = aliased(User)
-            recipient = aliased(User)
+        try:
+            async with async_session_maker() as session:
+                # Создаем алиасы для отправителя и получателя для удобства
+                sender = aliased(User)
+                recipient = aliased(User)
 
-            # Подзапрос для получения уникальных пар пользователей и времени последнего сообщения
-            sub_query = select(
-                func.least(cls.model.sender_id, cls.model.recipient_id).label("user1_id"),
-                func.greatest(cls.model.sender_id, cls.model.recipient_id).label("user2_id"),
-                func.max(cls.model.created_at).label("last_message_time")
-            ).group_by("user1_id", "user2_id").subquery()
+                # Подзапрос для получения уникальных пар пользователей и времени последнего сообщения
+                sub_query = select(
+                    func.least(cls.model.sender_id, cls.model.recipient_id).label("user1_id"),
+                    func.greatest(cls.model.sender_id, cls.model.recipient_id).label("user2_id"),
+                    func.max(cls.model.created_at).label("last_message_time")
+                ).group_by("user1_id", "user2_id").subquery()
 
-            # Основной запрос для получения чатов
-            query = select(
-                sub_query.c.user1_id,
-                sender.username.label("user1_username"),
-                sub_query.c.user2_id,
-                recipient.username.label("user2_username"),
-                sub_query.c.last_message_time
-            ).join(
-                sender, sender.id == sub_query.c.user1_id
-            ).join(
-                recipient, recipient.id == sub_query.c.user2_id
-            ).order_by(
-                desc(sub_query.c.last_message_time)
-            ).limit(limit).offset(offset)
+                # Основной запрос для получения чатов
+                query = select(
+                    sub_query.c.user1_id,
+                    sender.username.label("user1_username"),
+                    sub_query.c.user2_id,
+                    recipient.username.label("user2_username"),
+                    sub_query.c.last_message_time
+                ).join(
+                    sender, sender.id == sub_query.c.user1_id
+                ).join(
+                    recipient, recipient.id == sub_query.c.user2_id
+                ).order_by(
+                    desc(sub_query.c.last_message_time)
+                ).limit(limit).offset(offset)
 
-            result = await session.execute(query)
-            all_chats = result.all()
-            return all_chats
+                result = await session.execute(query)
+                all_chats = result.all()
+                return all_chats
+        except (SQLAlchemyError, Exception) as e:
+            cls._log_error(
+                e,
+                error_message=f"Cannot get all users chats, model {cls.model.__name__}",
+                extra={
+                    "offset": offset,
+                    "limit": limit
+                }
+            )

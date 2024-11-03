@@ -13,3 +13,5 @@ app = FastAPI(
 app.include_router(ChatRouter)
 app.include_router(AuthRouter)
 app.include_router(ModRouter)
+
+

@@ -1,16 +1,15 @@
 import asyncio
 from datetime import datetime
 
-from fastapi import APIRouter, WebSocketDisconnect, WebSocket, Depends, Query, Path
+from fastapi import APIRouter, WebSocketDisconnect, WebSocket, Depends, Query
 from pydantic import UUID4
 from fastapi import status
-from sqlalchemy.sql.functions import current_user
 
 from app.chat.services import ChatService
 from app.auth.models import User
 from app.auth.dependencies import get_current_user, get_current_user_websocket
-from app.chat.shemas import SMessageCreate, SChats, SMessageCreateResponse, SSearchByUsernameResponse, \
-    SGetMessagesBetweenUsersResponse
+from app.chat.shemas import SChats, SSearchByUsernameResponse, \
+    SGetMessagesBetweenUsersResponse, SWebsocketMessage
 
 from app.chat.websocket import manager
 from app.core.config import settings
@@ -40,11 +39,6 @@ async def get_messages_between_users(
                                                         cursor_time=cursor_time, cursor_message_id=cursor_message_id)
 
 
-@router.post("/messages", status_code=status.HTTP_201_CREATED, response_model=SMessageCreateResponse)
-async def send_message(message: SMessageCreate, current_user: User = Depends(get_current_user)):
-    return await ChatService.add_message(message, current_user_id=current_user.id)
-
-
 @router.get("/users", response_model=SSearchByUsernameResponse)
 async def search_by_username(
         username: str = Query(min_length=1),
@@ -61,6 +55,15 @@ async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket=websocket, user_id=current_user.id)
     try:
         while True:
-            await asyncio.sleep(1)
+            data = await websocket.receive_json()
+            message = SWebsocketMessage(
+                message_text=data.get('message_text'),
+                recipient_id=data.get('recipient_id'),
+                created_at=datetime.utcnow()
+            )
+            await ChatService.add_message(message, current_user.id)
+            await manager.notify_user_about_new_message(message, sender_id=current_user.id)
+            await manager.notify_chat_list_update(current_user_id=current_user.id, partner_id=message.recipient_id, last_message_time=message.created_at)
+
     except WebSocketDisconnect:
         manager.disconnect(current_user.id)

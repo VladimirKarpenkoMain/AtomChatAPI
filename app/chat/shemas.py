@@ -9,9 +9,21 @@ class SLimitOffsetPagination(BaseModel):
     new_offset: int
     is_end: bool
 
-class SMessageCreate(BaseModel):
+class SWebsocketMessage(BaseModel):
     message_text: str
     recipient_id: UUID4
+    created_at: datetime
+
+class SWebsocketPersonalMessage(BaseModel):
+    sender_id: UUID4
+    recipient_id: UUID4
+    message_text: str
+    created_at: datetime
+
+class SWebsocketEventMessage(BaseModel):
+    event: str
+    partner_id: UUID4
+    last_message_time: datetime
 
 class SMessageCreateResponse(BaseModel):
     status: str

@@ -7,12 +7,14 @@ from sqlalchemy import text
 import uuid
 from datetime import datetime
 
+from app.core.logger import logger
+
 
 async def add_test_users():
     async with async_session_maker() as session:
         existing_users = await session.execute(text("SELECT * FROM users LIMIT 1"))
         if existing_users.scalar() is not None:
-            print("Тестовые данные уже существуют.")
+            logger.info("The test data already exists.")
             return
 
         # Создаем трех пользователей
@@ -40,7 +42,7 @@ async def add_test_users():
 
         session.add_all([user1, user2, user3])
         await session.commit()
-        print("Тестовые пользователи успешно добавлены.")
+        logger.info("Test users have been successfully added.")
 
         # Добавляем по 10 сообщений между пользователями
         await add_test_messages(session, user1, user2)
@@ -61,7 +63,7 @@ async def add_test_messages(session, sender, recipient):
 
     session.add_all(messages)
     await session.commit()
-    print(f"Сообщения между {sender.username} и {recipient.username} успешно добавлены.")
+    logger.info(f"Messages between {sender.username} and {recipient.username} have been successfully added.")
 
 
 if __name__ == "__main__":
