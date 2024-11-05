@@ -45,3 +45,23 @@
 | Пользователь | test1@example.com    | test_password_1   |
 | Пользователь | test2@example.com    | test_password_2   |
 | Модератор    | moderator@example.com | moderator_password_3 |
+
+## WebSocket
+
+### Подключение к WebSocket
+
+- **URL WebSocket**: `ws://localhost:7777/chat/ws/` *(при использовании Docker Compose и стандартных настроек)*
+- **Протокол**: WebSocket
+- **Аутентификация**: JWT-токен
+
+### Как подключиться
+
+#### 1. Получите JWT-токен
+
+Перед подключением к WebSocket необходимо пройти аутентификацию через стандартный API и получить JWT-токен.
+
+#### 2. Установите соединение с WebSocket
+
+При подключении к WebSocket передайте JWT-токен в заголовке `Authorization` следующим образом:
+
+- **Заголовок**: `Authorization: Bearer <ваш_JWT_токен>`
