@@ -104,10 +104,13 @@ class ConnectionManager(ErrorHandler):
         """
         # Формируем данные сообщения для отправки.
         message_data = {
-            "sender_id": str(sender_id),
-            "recipient_id": str(message.recipient_id),
-            "message_text": message.message_text,
-            "created_at": str(message.created_at),
+            "type": "new_message",
+            "data": {
+                "sender_id": str(sender_id),
+                "recipient_id": str(message.recipient_id),
+                "message_text": message.message_text,
+                "created_at": str(message.created_at)
+            }
         }
         # Отправляем сообщение получателю.
         await self.send_personal_message(message_data, message.recipient_id)
@@ -124,15 +127,17 @@ class ConnectionManager(ErrorHandler):
             last_message_time (datetime): Время последнего сообщения.
         """
         # Формируем данные события об обновлении чата.
-        event_data = {
-            "event": "new_message",
-            "partner_id": str(partner_id),
-            "last_message_time": str(last_message_time),
+        message_data = {
+            "type": "chat_list_update",
+            "data": {
+                "partner_id": str(partner_id),
+                "last_message_time": str(last_message_time)
+            }
         }
         # Отправляем уведомление текущему пользователю.
-        await self.send_personal_message(event_data, current_user_id)
+        await self.send_personal_message(message_data, current_user_id)
         # Отправляем уведомление партнеру.
-        await self.send_personal_message(event_data, partner_id)
+        await self.send_personal_message(message_data, partner_id)
 
 
 # Создаем экземпляр менеджера соединений.
