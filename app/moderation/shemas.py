@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
-from pydantic import BaseModel, UUID4, Field
+
+from pydantic import UUID4, BaseModel, Field
 
 from app.chat.shemas import SLimitOffsetPagination
 
@@ -9,16 +10,20 @@ class SModerUserInfoChat(BaseModel):
     user_id: UUID4
     username: str
 
+
 class SModerBaseInfoChat(BaseModel):
     participants: List[SModerUserInfoChat]
     last_message_time: datetime
 
+
 class SModerChat(BaseModel):
     chat: SModerBaseInfoChat
+
 
 class SModerChatsResponse(BaseModel):
     chats: List[SModerChat]
     pagination: SLimitOffsetPagination
+
 
 class SModerBlockResponse(BaseModel):
     detail: str = Field("The user has been blocked")

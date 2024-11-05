@@ -1,12 +1,13 @@
 import asyncio
-from app.core.database import async_session_maker
-from app.auth.models import User
-from app.chat.models import Message
-from app.auth.auth_utilits import get_password_hash
-from sqlalchemy import text
 import uuid
 from datetime import datetime
 
+from sqlalchemy import text
+
+from app.auth.auth_utilits import get_password_hash
+from app.auth.models import User
+from app.chat.models import Message
+from app.core.database import async_session_maker
 from app.core.logger import logger
 
 
@@ -23,21 +24,21 @@ async def add_test_users():
             username="test_user1",
             email="test1@example.com",
             hashed_password=get_password_hash("test_password_1"),
-            is_moderator=False
+            is_moderator=False,
         )
         user2 = User(
             id=uuid.uuid4(),
             username="test_user2",
             email="test2@example.com",
             hashed_password=get_password_hash("test_password_2"),
-            is_moderator=False
+            is_moderator=False,
         )
         user3 = User(
             id=uuid.uuid4(),
             username="test_moderator",
             email="moderator@example.com",
             hashed_password=get_password_hash("moderator_password_3"),
-            is_moderator=True
+            is_moderator=True,
         )
 
         session.add_all([user1, user2, user3])
@@ -57,13 +58,15 @@ async def add_test_messages(session, sender, recipient):
             message_text=f"Тестовое сообщение {i + 1} от {sender.username} к {recipient.username}",
             sender_id=sender.id,
             recipient_id=recipient.id,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
         )
         messages.append(message)
 
     session.add_all(messages)
     await session.commit()
-    logger.info(f"Messages between {sender.username} and {recipient.username} have been successfully added.")
+    logger.info(
+        f"Messages between {sender.username} and {recipient.username} have been successfully added."
+    )
 
 
 if __name__ == "__main__":

@@ -1,8 +1,10 @@
-from sqlalchemy.exc import SQLAlchemyError
-from app.core.exceptions import ErrorHandler
-from app.core.database import async_session_maker
-from sqlalchemy import select, insert
 from pydantic import UUID4
+from sqlalchemy import insert, select
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.core.database import async_session_maker
+from app.core.exceptions import ErrorHandler
+
 
 class BaseDao(ErrorHandler):
     # Модель базы данных, с которой будет работать DAO (Data Access Object).
@@ -26,7 +28,9 @@ class BaseDao(ErrorHandler):
                 query = (
                     insert(cls.model)
                     .values(**data)
-                    .returning(*cls.model.__table__.columns)  # Возвращаем все колонки объекта
+                    .returning(
+                        *cls.model.__table__.columns
+                    )  # Возвращаем все колонки объекта
                 )
                 # Выполнение запроса
                 result = await session.execute(query)
@@ -37,9 +41,7 @@ class BaseDao(ErrorHandler):
         except (SQLAlchemyError, Exception) as e:
             # Логирование ошибки с деталями
             cls._log_error(
-                e,
-                error_message=f"Cannot add new {cls.model.__name__}",
-                extra=data
+                e, error_message=f"Cannot add new {cls.model.__name__}", extra=data
             )
 
     @classmethod
@@ -63,9 +65,7 @@ class BaseDao(ErrorHandler):
             cls._log_error(
                 e,
                 error_message=f"Cannot find {cls.model.__name__} by id",
-                extra={
-                    "model_id": model_id
-                }
+                extra={"model_id": model_id},
             )
 
     @classmethod
@@ -89,7 +89,7 @@ class BaseDao(ErrorHandler):
             cls._log_error(
                 e,
                 error_message=f"Cannot find one or none for model {cls.model.__name__}",
-                extra=filter_by
+                extra=filter_by,
             )
 
     @classmethod
@@ -110,6 +110,5 @@ class BaseDao(ErrorHandler):
         except (SQLAlchemyError, Exception) as e:
             # Логирование ошибки с деталями
             cls._log_error(
-                e,
-                error_message=f"Cannot find all for model {cls.model.__name__}"
+                e, error_message=f"Cannot find all for model {cls.model.__name__}"
             )

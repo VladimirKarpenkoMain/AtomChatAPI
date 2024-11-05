@@ -1,66 +1,187 @@
+from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, UUID4
-from datetime import datetime
+from pydantic import UUID4, BaseModel, Field
+
 
 class SLimitOffsetPagination(BaseModel):
-    limit: int
-    current_offset: int
-    new_offset: int
-    is_end: bool
+    """
+    Модель для представления информации о пагинации.
+    """
 
-class SWebsocketMessage(BaseModel):
-    message_text: str
-    recipient_id: UUID4
-    created_at: datetime
+    limit: int = Field(
+        ..., description="Максимальное количество записей за раз", example=10
+    )
+    current_offset: int = Field(..., description="Текущее смещение данных", example=0)
+    new_offset: int = Field(
+        ..., description="Новое смещение данных после загрузки", example=10
+    )
+    is_end: bool = Field(..., description="Флаг окончания данных", example=False)
 
-class SWebsocketPersonalMessage(BaseModel):
-    sender_id: UUID4
-    recipient_id: UUID4
-    message_text: str
-    created_at: datetime
 
-class SWebsocketEventMessage(BaseModel):
-    event: str
-    partner_id: UUID4
-    last_message_time: datetime
+class IncomingWebSocketMessage(BaseModel):
+    """
+    Модель для представления сообщения, отправляемого через WebSocket.
+    """
+
+    message_text: str = Field(
+        ..., description="Текст сообщения", example="Hello, how are you?"
+    )
+    recipient_id: UUID4 = Field(
+        ...,
+        description="UUID получателя",
+        example="d9b9f719-5e5e-4b49-8f00-d8f9f19e5e50",
+    )
+
+
+class SWebsocketMessage(IncomingWebSocketMessage):
+    """
+    Модель для представления сообщения, отправляемого через WebSocket.
+    """
+
+    created_at: datetime = Field(
+        ...,
+        default_factory=datetime.utcnow,
+        description="Время создания сообщения",
+        example="2024-11-03T14:25:43.511Z",
+    )
+
 
 class SMessageCreateResponse(BaseModel):
-    status: str
-    sender_id: UUID4
-    recipient_id: UUID4
-    message_text: str
-    created_at: datetime
+    """
+    Модель для ответа при успешном создании сообщения.
+    """
+
+    status: str = Field(
+        ..., description="Статус операции (например, 'success')", example="success"
+    )
+    sender_id: UUID4 = Field(
+        ...,
+        description="UUID отправителя",
+        example="a123b456-c789-0123-d456-789e0f123456",
+    )
+    recipient_id: UUID4 = Field(
+        ...,
+        description="UUID получателя",
+        example="d9b9f719-5e5e-4b49-8f00-d8f9f19e5e50",
+    )
+    message_text: str = Field(
+        ..., description="Текст сообщения", example="Message sent successfully."
+    )
+    created_at: datetime = Field(
+        ..., description="Время создания сообщения", example="2024-11-03T17:05:45.000Z"
+    )
+
 
 class SChat(BaseModel):
-    partner_id: UUID4
-    partner_username: str
-    last_message_time: datetime
+    """
+    Модель для представления чата с пользователем.
+    """
+
+    partner_id: UUID4 = Field(
+        ...,
+        description="UUID партнера по чату",
+        example="f456e789-0123-4567-89ab-0123456789ab",
+    )
+    partner_username: str = Field(
+        ..., description="Имя пользователя партнера", example="chat_partner"
+    )
+    last_message_time: datetime = Field(
+        ...,
+        description="Время последнего сообщения в чате",
+        example="2024-11-03T18:00:00.000Z",
+    )
+
 
 class SChats(BaseModel):
-    chats: List[SChat]
-    cursor_last_message_time: datetime | None
+    """
+    Модель для представления списка чатов пользователя.
+    """
+
+    chats: List[SChat] = Field(..., description="Список чатов")
+    cursor_last_message_time: Optional[datetime] = Field(
+        None,
+        description="Время последнего сообщения для пагинации",
+        example="2024-11-03T18:00:00.000Z",
+    )
+
 
 class SSearchByUsernameUsers(BaseModel):
-    id: UUID4
-    username: str
+    """
+    Модель для представления пользователя при поиске по имени.
+    """
+
+    id: UUID4 = Field(
+        ...,
+        description="UUID пользователя",
+        example="f456e789-0123-4567-89ab-0123456789ab",
+    )
+    username: str = Field(..., description="Имя пользователя", example="searched_user")
+
 
 class SSearchByUsernameResponse(BaseModel):
-    users: List[SSearchByUsernameUsers]
-    pagination: SLimitOffsetPagination
+    """
+    Модель для ответа при поиске пользователей по имени.
+    """
+
+    users: List[SSearchByUsernameUsers] = Field(
+        ..., description="Список найденных пользователей"
+    )
+    pagination: SLimitOffsetPagination = Field(..., description="Данные пагинации")
+
 
 class SGetMessage(BaseModel):
-    sender_id: UUID4
-    username: str
-    message_text: str
-    created_at: datetime
+    """
+    Модель для представления полученного сообщения.
+    """
+
+    sender_id: UUID4 = Field(
+        ...,
+        description="UUID отправителя сообщения",
+        example="a123b456-c789-0123-d456-789e0f123456",
+    )
+    username: str = Field(
+        ..., description="Имя пользователя отправителя", example="sender_user"
+    )
+    message_text: str = Field(
+        ..., description="Текст сообщения", example="This is a message."
+    )
+    created_at: datetime = Field(
+        ..., description="Время создания сообщения", example="2024-11-03T19:30:45.123Z"
+    )
+
 
 class SParticipiant(BaseModel):
-    participant_id: UUID4
-    is_current_user: bool
+    """
+    Модель для представления участника переписки.
+    """
+
+    participant_id: UUID4 = Field(
+        ...,
+        description="UUID участника",
+        example="f456e789-0123-4567-89ab-0123456789ab",
+    )
+    is_current_user: bool = Field(
+        ...,
+        description="Флаг, указывающий, является ли участник текущим пользователем",
+        example=True,
+    )
+
 
 class SGetMessagesBetweenUsersResponse(BaseModel):
-    participants: List[SParticipiant]
-    messages: List[SGetMessage]
-    cursor_time: Optional[datetime]
-    cursor_message_id: Optional[int]
+    """
+    Модель для ответа при получении сообщений между пользователями.
+    """
+
+    participants: List[SParticipiant] = Field(
+        ..., description="Список участников переписки"
+    )
+    messages: List[SGetMessage] = Field(..., description="Список сообщений")
+    cursor_time: Optional[datetime] = Field(
+        None,
+        description="Метка времени для пагинации",
+        example="2024-11-03T20:00:00.000Z",
+    )
+    cursor_message_id: Optional[int] = Field(
+        None, description="ID сообщения для пагинации", example=123
+    )
