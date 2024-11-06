@@ -16,7 +16,7 @@ class AuthJWT(BaseModel):
 
 
 class Settings(BaseSettings):
-    DEBUG: bool
+    MODE: Literal["DEBUG", "TEST", "PROD"]
     LOG_LEVEL: Literal["INFO", "DEBUG"]
 
     DB_HOST: str
@@ -24,6 +24,12 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASS: str
+
+    TEST_DB_HOST: str
+    TEST_DB_PORT: int
+    TEST_DB_NAME: str
+    TEST_DB_USER: str
+    TEST_DB_PASS: str
 
     AUTH_JWT: AuthJWT = AuthJWT()
     BASE_LIMIT_CHATS_FOR_USER: int
@@ -39,6 +45,11 @@ class Settings(BaseSettings):
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    @computed_field
+    @property
+    def TEST_DATABASE_URL(self) -> str:
+        return f"postgresql+asyncpg://{self.TEST_DB_USER}:{self.TEST_DB_PASS}@{self.TEST_DB_HOST}:{self.TEST_DB_PORT}/{self.TEST_DB_NAME}"
 
 
 settings = Settings()

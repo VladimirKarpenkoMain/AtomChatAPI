@@ -8,6 +8,8 @@ from app.auth.shemas import (
     SUserRegister,
     SUserRegisterResponse,
 )
+from app.core.config import settings
+from app.core.logger import logger
 
 router = APIRouter(
     prefix="/auth",
@@ -19,6 +21,32 @@ router = APIRouter(
     "/register/",
     status_code=status.HTTP_201_CREATED,
     response_model=SUserRegisterResponse,
+    responses={
+        "400": {
+            "description": "Пароли не совпадают",
+            "content": {"application/json": {
+                "example": {
+                    "detail": "Passwords don't match."
+                }
+            }}
+        },
+        "409": {
+                "description": "Пользователь с такой почтой или таким именем существует.",
+                "content": {"application/json": {
+                    "examples":{
+                        "UserEmailExistsException": {
+                            "summary": "UserEmailExistsException",
+                            "value": {"detail": "A user with such an email exists."}
+                        },
+                        "UserUsernameExistsException": {
+                            "summary": "UserUsernameExistsException",
+                            "value": {"detail": "A user with such an username exists."}
+                        }
+                    },
+                }
+            }
+        }
+    }
 )
 async def register_user(user_data: SUserRegister):
     """
@@ -33,7 +61,10 @@ async def register_user(user_data: SUserRegister):
     return await AuthService.register_user(user_data)
 
 
-@router.post("/login/", response_model=STokenInfo)
+@router.post(
+    "/login/",
+    response_model=STokenInfo,
+)
 async def jwt_login_user(user_data: SUserAuth):
     """
     Авторизация пользователя.
@@ -44,6 +75,7 @@ async def jwt_login_user(user_data: SUserAuth):
 
     Возвращает объект с access и refresh токенами.
     """
+    logger.info(f"{settings.MODE}", exc_info=True)
     return await AuthService.jwt_login_user(user_data)
 
 

@@ -1,0 +1,212 @@
+[
+    {
+        "id": 1,
+        "message_text": "Hello, John! How's it going?",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:00:00Z"
+    },
+    {
+        "id": 2,
+        "message_text": "Hi Jane! I'm good. What about you?",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:01:00Z"
+    },
+    {
+        "id": 3,
+        "message_text": "Doing well, thanks! Are you free to meet this weekend?",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:02:00Z"
+    },
+    {
+        "id": 4,
+        "message_text": "Yes, let's catch up!",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:03:00Z"
+    },
+    {
+        "id": 5,
+        "message_text": "Great! Let's meet at the usual place.",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:04:00Z"
+    },
+    {
+        "id": 6,
+        "message_text": "Sounds good. I'll see you there!",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:05:00Z"
+    },
+    {
+        "id": 7,
+        "message_text": "Do you need me to bring anything?",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:06:00Z"
+    },
+    {
+        "id": 8,
+        "message_text": "No, just yourself!",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:07:00Z"
+    },
+    {
+        "id": 9,
+        "message_text": "Alright, see you soon!",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:08:00Z"
+    },
+    {
+        "id": 10,
+        "message_text": "Take care until then!",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:09:00Z"
+    },
+    {
+        "id": 11,
+        "message_text": "Hey Alice, got time to chat?",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:10:00Z"
+    },
+    {
+        "id": 12,
+        "message_text": "Hi John! Sure, what's up?",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:11:00Z"
+    },
+    {
+        "id": 13,
+        "message_text": "I wanted to discuss the project.",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:12:00Z"
+    },
+    {
+        "id": 14,
+        "message_text": "Sure thing. Do you have any specific concerns?",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:13:00Z"
+    },
+    {
+        "id": 15,
+        "message_text": "I'm unsure about the timeline.",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:14:00Z"
+    },
+    {
+        "id": 16,
+        "message_text": "We can extend it if needed.",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:15:00Z"
+    },
+    {
+        "id": 17,
+        "message_text": "Thank you, that would be helpful.",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:16:00Z"
+    },
+    {
+        "id": 18,
+        "message_text": "No problem. Keep me posted on your progress!",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:17:00Z"
+    },
+    {
+        "id": 19,
+        "message_text": "Will do. Thanks again!",
+        "sender_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:18:00Z"
+    },
+    {
+        "id": 20,
+        "message_text": "Happy to help!",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "1e5f2ecb-bc74-4df0-a2a7-3e9f9b9e2cf1",
+        "created_at": "2024-11-06T10:19:00Z"
+    },
+    {
+        "id": 21,
+        "message_text": "Hey Alice, need some advice.",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:20:00Z"
+    },
+    {
+        "id": 22,
+        "message_text": "Sure, Jane! What do you need help with?",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:21:00Z"
+    },
+    {
+        "id": 23,
+        "message_text": "Just some feedback on my recent report.",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:22:00Z"
+    },
+    {
+        "id": 24,
+        "message_text": "Of course, send it over!",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:23:00Z"
+    },
+    {
+        "id": 25,
+        "message_text": "Sent. Let me know your thoughts.",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:24:00Z"
+    },
+    {
+        "id": 26,
+        "message_text": "Got it! I'll review it tonight.",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:25:00Z"
+    },
+    {
+        "id": 27,
+        "message_text": "Thanks so much, Alice!",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:26:00Z"
+    },
+    {
+        "id": 28,
+        "message_text": "Happy to help anytime.",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:27:00Z"
+    },
+    {
+        "id": 29,
+        "message_text": "Can't wait to hear your feedback.",
+        "sender_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "recipient_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "created_at": "2024-11-06T10:28:00Z"
+    },
+    {
+        "id": 30,
+        "message_text": "Will give you a call once I finish!",
+        "sender_id": "4d7f5fdb-be94-6bf0-d4d7-6e8f9c2e5df4",
+        "recipient_id": "2a5f3dcb-bc74-4af0-b3b7-4f8f9a0e3cf2",
+        "created_at": "2024-11-06T10:29:00Z"
+    }
+]

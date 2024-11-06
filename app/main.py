@@ -7,8 +7,8 @@ from app.moderation.router import router as ModRouter
 
 app = FastAPI(
     title="AtomChat API",
-    docs_url=None if settings.DEBUG is False else "/docs",
-    redoc_url=None if settings.DEBUG is False else "/redoc",
+    docs_url=None if settings.MODE == "PROD" else "/docs",
+    redoc_url=None if settings.MODE == "PROD" else "/redoc",
 )
 
 app.include_router(AuthRouter, prefix="/api/v1")
